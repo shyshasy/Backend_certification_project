@@ -1,0 +1,52 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Utilisateur {
+  id        Int      @id @default(autoincrement())
+  nom       String   @db.VarChar(50)
+  role      String   @db.VarChar(50) // Sans accents
+  email     String   @db.VarChar(250)
+  status    Boolean
+  password  String   @db.VarChar(255)
+
+  tickets   Ticket[] @relation("UtilisateurTickets")
+  evaluations Evaluation[] @relation("UtilisateurEvaluations")
+}
+
+model Guichet {
+  id              Int      @id @default(autoincrement())
+  numero_guichet  Int
+  statut          Boolean
+  responsable     String   @db.VarChar(50)
+
+  tickets         Ticket[] @relation("GuichetTickets")
+}
+
+model Ticket {
+  id                Int        @id @default(autoincrement())
+  statut            Boolean
+  date_heure_creation DateTime
+  numero            Int
+
+  guichet_id        Int
+  utilisateur_id    Int
+
+  guichet           Guichet    @relation("GuichetTickets", fields: [guichet_id], references: [id])
+  utilisateur       Utilisateur @relation("UtilisateurTickets", fields: [utilisateur_id], references: [id])
+}
+
+model Evaluation {
+  id             Int        @id @default(autoincrement())
+  satis_score    Int
+  commentaire    String     @db.Text
+  date_evaluation DateTime
+
+  utilisateur_id Int
+  utilisateur    Utilisateur @relation("UtilisateurEvaluations", fields: [utilisateur_id], references: [id])
+}
