@@ -37,37 +37,46 @@ export const getEvaluationById = async (req, res) => {
 // Create a new evaluation
 export const createEvaluation = async (req, res) => {
     const { satis_score, commentaire, date_evaluation, utilisateur_id } = req.body;
+    
+    // Validation des données
+    if (!satis_score || !commentaire || !date_evaluation || !utilisateur_id) {
+        return res.status(400).json({ error: 'Tous les champs sont requis.' });
+    }
+
     try {
         const newEvaluation = await prisma.evaluation.create({
-            data: { satis_score, commentaire, date_evaluation, utilisateur_id }
+            data: { satis_score, commentaire, date_evaluation: new Date(date_evaluation), utilisateur_id }
         });
-        res.status(201).json("Evalution ajouter avec succès");
+        res.status(201).json("Évaluation ajoutée avec succès");
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Erreur lors de la création de l\'évaluation' });
     }
 };
 
-// Update evaluation
-export const updateEvaluation = async (req, res) => {
-    const { id } = req.params;
-    const { satis_score, commentaire, date_evaluation, utilisateur_id } = req.body;
 
-    try {
-        const updatedEvaluation = await prisma.evaluation.update({
+
+// // Update evaluation
+// export const updateEvaluation = async (req, res) => {
+//     const { id } = req.params;
+//     const { satis_score, commentaire, date_evaluation, utilisateur_id } = req.body;
+
+//     try {
+//         const updatedEvaluation = await prisma.evaluation.update({
             
  
-where: { id: Number(id) },
-            data: { satis_score, commentaire, date_evaluation: new Date(date_evaluation), utilisateur_id }
-        });
+// where: { id: Number(id) },
+//             data: { satis_score, commentaire, date_evaluation: new Date(date_evaluation), utilisateur_id }
+//         });
 
-        res.status(200).json({ message: "Modification réussie"});
-    } 
+//         res.status(200).json({ message: "Modification réussie"});
+//     } 
     
-catch (error) {
-        const errorMessage = error.code === 'P2025' ? 'Évaluation non trouvée.' : 'Erreur lors de la mise à jour.';
-        res.status(500).json({ error: errorMessage });
-    }
-};
+// catch (error) {
+//         const errorMessage = error.code === 'P2025' ? 'Évaluation non trouvée.' : 'Erreur lors de la mise à jour.';
+//         res.status(500).json({ error: errorMessage });
+//     }
+// };
 
 // Delete evaluation
 export const deleteEvaluation = async (req, res) => {

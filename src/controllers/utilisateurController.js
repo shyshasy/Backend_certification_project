@@ -64,23 +64,33 @@ export const updateUtilisateur = async (req, res) => {
 // Delete utilisateur
 export const deleteUtilisateur = async (req, res) => {
     const { id } = req.params; // Récupérer l'ID de l'utilisateur
+    console.log(`Suppression de l'utilisateur avec l'ID : ${id}`); // Pour le débogage
+
+    if (!id || isNaN(id)) {
+        return res.status(400).json({ error: 'ID invalide fourni.' });
+    }
+
     try {
-        // Essayer de supprimer l'utilisateur
-        
-  
-const utilisateur = await prisma.utilisateur.delete({ where: { id: Number(id) } });
-        
-        // Si l'utilisateur a été trouvé et supprimé, on envoie un message de succès
-        res.status(200).json({ message: `L'utilisateur avec l'ID ${id} a été supprimé avec succès.` });
+        const utilisateurExistant = await prisma.utilisateur.findUnique({
+            where: { id: Number(id) },
+        });
+
+        if (!utilisateurExistant) {
+            return res.status(404).json({ error: 'Utilisateur non trouvé. Aucune suppression effectuée.' });
+        }
+
+        const utilisateur = await prisma.utilisateur.delete({
+            where: { id: Number(id) },
+        });
+
+        return res.status(200).json({ message: `L'utilisateur avec l'ID ${id} a été supprimé avec succès.` });
     } catch (error) {
-        // Vérification de l'erreur pour des cas spécifiques
+        console.error('Erreur lors de la suppression de l\'utilisateur:', error);
+
         if (error.code === 'P2025') { // Code d'erreur de Prisma pour "Record to delete does not exist"
             return res.status(404).json({ error: 'Utilisateur non trouvé. Aucune suppression effectuée.' });
         }
-        
-        
-    
-// Pour toutes les autres erreurs, renvoyer un message générique
-        res.status(500).json({ error: 'Une erreur est survenue lors de la suppression de l\'utilisateur. Veuillez réessayer plus tard.' });
+
+        return res.status(500).json({ error: 'Impossible de supprimer un utilisateur ratachè à un client.' });
     }
 };

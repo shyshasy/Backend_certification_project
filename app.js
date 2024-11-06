@@ -7,7 +7,7 @@ import ticketRoutes from './src/routes/ticketRoutes.js'; // Chemin vers les rout
 import evaluationRoutes from './src/routes/evaluationRoutes.js'; // Chemin vers les routes des évaluations
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5002;
 
 // Middleware
 app.use(helmet()); // Sécurise les en-têtes HTTP

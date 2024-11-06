@@ -10,8 +10,8 @@ generator client {
 model Utilisateur {
   id        Int      @id @default(autoincrement())
   nom       String   @db.VarChar(50)
-  role      String   @db.VarChar(50) // Sans accents
-  email     String   @db.VarChar(250)
+  role      String    @db.VarChar(50) 
+  email     String   @unique @db.VarChar(250)
   status    Boolean
   password  String   @db.VarChar(255)
 
@@ -21,7 +21,7 @@ model Utilisateur {
 
 model Guichet {
   id              Int      @id @default(autoincrement())
-  numero_guichet  Int
+  numero_guichet  Int @unique
   statut          Boolean
   responsable     String   @db.VarChar(50)
 
@@ -30,9 +30,9 @@ model Guichet {
 
 model Ticket {
   id                Int        @id @default(autoincrement())
-  statut            Boolean
+  statut            Boolean    @default(true)
   date_heure_creation DateTime
-  numero            Int
+  numero            Int @unique
 
   guichet_id        Int
   utilisateur_id    Int

@@ -58,7 +58,7 @@ export const deleteGuichet = async (req, res) => {
     const { id } = req.params;
     try {
         await prisma.guichet.delete({ where: { id: Number(id) } });
-        res.status(204).send();
+        res.status(200).send("Supprimer avec succès");
     } catch (error) {
         res.status(500).json({ error: 'Erreur lors de la suppression du guichet' });
     }
