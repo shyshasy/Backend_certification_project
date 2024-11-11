@@ -4,11 +4,19 @@ import prisma from "../config/client.js";
 export const getAllUtilisateurs = async (req, res) => {
     try {
         const utilisateurs = await prisma.utilisateur.findMany();
-        res.json(utilisateurs);
+        
+        // Modifier le statut pour chaque utilisateur
+        const utilisateursModifies = utilisateurs.map(utilisateur => ({
+            ...utilisateur,
+            statut: utilisateur.statut ? 'active' : 'inactive'
+        }));
+
+        res.json(utilisateursModifies);
     } catch (error) {
         res.status(500).json({ error: 'Erreur lors de la récupération des utilisateurs' });
     }
 };
+
 
 // Get utilisateur by ID
 export const getUtilisateurById = async (req, res) => {
@@ -28,7 +36,6 @@ export const getUtilisateurById = async (req, res) => {
 export const createUtilisateur = async (req, res) => {
     const { nom, role, email, status, password } = req.body;
     try {
-        // Vérifier si l'email existe déjà
         const existingUtilisateur = await prisma.utilisateur.findUnique({
             where: { email }
         });
@@ -40,6 +47,7 @@ export const createUtilisateur = async (req, res) => {
         const newUtilisateur = await prisma.utilisateur.create({
             data: { nom, role, email, status, password }
         });
+
         res.status(201).json("Utilisateur ajouté avec succès");
     } catch (error) {
         res.status(500).json({ error: 'Erreur lors de la création de l\'utilisateur' });

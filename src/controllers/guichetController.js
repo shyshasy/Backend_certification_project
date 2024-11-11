@@ -42,12 +42,17 @@ export const createGuichet = async (req, res) => {
 export const updateGuichet = async (req, res) => {
     const { id } = req.params;
     const { numero_guichet, statut, responsable } = req.body;
+
+    if (typeof statut !== 'boolean') {
+        return res.status(400).json({ error: 'Le statut doit être un booléen' });
+    }
+
     try {
         const updatedGuichet = await prisma.guichet.update({
             where: { id: Number(id) },
             data: { numero_guichet, statut, responsable }
         });
-        res.status(201).json("Guichet modifiè avec succès");
+        res.status(200).json("Guichet modifié avec succès");
     } catch (error) {
         res.status(500).json({ error: 'Erreur lors de la mise à jour du guichet' });
     }

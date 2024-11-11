@@ -9,6 +9,7 @@ import {
     deleteUtilisateur
 } from '../controllers/utilisateurController.js';
 
+
 // Importer le validateur pour les utilisateurs
 import { validateUtilisateurData } from '../validators/validateUtilisateurData.js'; // Assurez-vous que le chemin vers le validateur est correct
 
