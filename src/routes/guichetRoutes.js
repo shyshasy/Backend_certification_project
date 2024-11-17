@@ -11,6 +11,8 @@ import {
 
 // Importer le validateur pour les guichets
 import validateGuichetData from '../validators/validateGuichetData.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
+import roleAdminMiddleware from '../middlewares/roleAdminMiddlewares.js';
 
 const router = express.Router();
 
@@ -19,15 +21,15 @@ router.use(helmet());
 router.use(cors());
 
 // Routes pour les guichets
-router.get('/guichets', getAllGuichets);
-router.get('/guichets/:id', getGuichetById);
+router.get('/guichets',authMiddleware, roleAdminMiddleware, getAllGuichets);
+router.get('/guichets/:id', roleAdminMiddleware, getGuichetById);
 
 // Appliquer le validateur lors de la création d'un guichet
-router.post('/guichets', validateGuichetData, createGuichet);
+router.post('/guichets',authMiddleware, roleAdminMiddleware, validateGuichetData, createGuichet);
 
 // Appliquer le validateur lors de la mise à jour d'un guichet
-router.put('/guichets/:id', validateGuichetData, updateGuichet);
+router.put('/guichets/:id',authMiddleware, roleAdminMiddleware, validateGuichetData, updateGuichet);
 
-router.delete('/guichets/:id', deleteGuichet);
+router.delete('/guichets/:id',authMiddleware,roleAdminMiddleware, deleteGuichet);
 
 export default router;

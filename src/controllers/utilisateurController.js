@@ -1,4 +1,5 @@
 import prisma from "../config/client.js";
+import bcrypt from 'bcrypt';
 
 // Get all utilisateurs
 export const getAllUtilisateurs = async (req, res) => {
@@ -43,9 +44,11 @@ export const createUtilisateur = async (req, res) => {
         if (existingUtilisateur) {
             return res.status(400).json({ error: 'L\'email existe déjà' });
         }
+        const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds set to 10
 
-        const newUtilisateur = await prisma.utilisateur.create({
-            data: { nom, role, email, status, password }
+
+        await prisma.utilisateur.create({
+            data: { nom, role, email, status, password:hashedPassword }
         });
 
         res.status(201).json("Utilisateur ajouté avec succès");

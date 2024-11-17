@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 // Validation pour créer ou mettre à jour un guichet
 const validateGuichetData = async (req, res, next) => {
-    const { numero_guichet, statut, responsable } = req.body;
+    const { numero_guichet, status, responsable } = req.body;
     let errors = [];
 
     // Vérification du numéro de guichet (doit être un entier)
@@ -23,9 +23,9 @@ const validateGuichetData = async (req, res, next) => {
         }
     }
 
-    // Vérification du statut (doit être un booléen)
-    if (!isBoolean(String(statut))) {
-        errors.push("Le statut doit être true ou false.");
+    // Vérification du status (doit être un booléen)
+    if (!isBoolean(String(status))) {
+        errors.push("Le status doit être true ou false.");
     }
 
     // Vérification du responsable (doit contenir entre 2 et 50 caractères)

@@ -11,6 +11,7 @@ import {
 
 // Importer le validateur pour les tickets
 import validateTicketData from '../validators/validateTicketData.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
 
 
 const router = express.Router();
@@ -20,15 +21,15 @@ router.use(helmet());
 router.use(cors());
 
 // Routes pour les tickets
-router.get('/tickets', getAllTickets);
-router.get('/tickets/:id', getTicketById);
+router.get('/tickets',authMiddleware, getAllTickets);
+router.get('/tickets/:id',authMiddleware, getTicketById);
 
 // Appliquer le validateur lors de la création d'un ticket
-router.post('/tickets', validateTicketData, createTicket);
+router.post('/tickets',authMiddleware, validateTicketData, createTicket);
 
 // Appliquer le validateur lors de la mise à jour d'un ticket
-router.put('/tickets/:id', validateTicketData, updateTicket);
+router.put('/tickets/:id',authMiddleware, validateTicketData, updateTicket);
 
-router.delete('/tickets/:id', deleteTicket);
+router.delete('/tickets/:id',authMiddleware, deleteTicket);
 
 export default router;
