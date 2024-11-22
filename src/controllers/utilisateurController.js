@@ -53,7 +53,7 @@ export const createUtilisateur = async (req, res) => {
 
         res.status(201).json("Utilisateur ajouté avec succès");
     } catch (error) {
-        res.status(500).json({ error: 'Erreur lors de la création de l\'utilisateur' });
+        res.status(500).json({ error: 'Erreur lors de la création de l\'utilisateur', error: error });
     }
 };
 

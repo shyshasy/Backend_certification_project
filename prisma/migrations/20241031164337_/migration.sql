@@ -15,6 +15,4 @@ CREATE UNIQUE INDEX "Ticket_numero_key" ON "Ticket"("numero");
 -- CreateIndex
 CREATE UNIQUE INDEX "Utilisateur_email_key" ON "Utilisateur"("email");
 -- Mise à jour des colonnes avec des valeurs par défaut pour les anciennes lignes
-UPDATE "Ticket"
-SET "clientName" = 'Inconnu', "guichetId" = 1, "utilisateurId" = 1
-WHERE "clientName" IS NULL OR "guichetId" IS NULL OR "utilisateurId" IS NULL;
+

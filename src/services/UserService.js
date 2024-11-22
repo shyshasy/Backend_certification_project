@@ -12,6 +12,7 @@ class UserService{
           const user = await prisma.utilisateur.findUnique({
             where: {
               email: email,
+              password: password
             },
           });
     

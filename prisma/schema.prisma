@@ -30,21 +30,19 @@ model Guichet {
 
   tickets         Ticket[] @relation("GuichetTickets")
 }
+
 model Ticket {
-  id            Int       @id @default(autoincrement())   // Identifiant unique, auto-incrémenté
-  numero        Int       @unique                        // Numéro unique du ticket
-  date          DateTime  @default(now())                // Date et heure de création du ticket
-  statut        String    @default("en_attente")          // Statut du ticket (par défaut "en_attente")
-  clientName    String    @db.VarChar(100) @default("Inconnu")  // Valeur par défaut "Inconnu" pour le nom du client
-  guichetId     Int       @default(1)                     // Valeur par défaut (utilisez un ID de guichet existant ou une valeur générique)
-  guichet       Guichet   @relation("GuichetTickets", fields: [guichetId], references: [id]) // Relation avec le guichet
-  utilisateurId Int       @default(1)                     // Valeur par défaut (utilisez un ID d'utilisateur existant ou une valeur générique)
-  utilisateur   Utilisateur @relation("UtilisateurTickets", fields: [utilisateurId], references: [id]) // Relation avec l'utilisateur
+  id                Int        @id @default(autoincrement())
+  statut            Boolean    @default(true)
+  date_heure_creation DateTime
+  numero            Int @unique
+
+  guichet_id        Int
+  utilisateur_id    Int
+
+  guichet           Guichet    @relation("GuichetTickets", fields: [guichet_id], references: [id])
+  utilisateur       Utilisateur @relation("UtilisateurTickets", fields: [utilisateur_id], references: [id])
 }
-
-
-
-
 
 model Evaluation {
   id             Int        @id @default(autoincrement())
