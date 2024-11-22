@@ -7,7 +7,7 @@ import ticketRoutes from './src/routes/ticketRoutes.js';
 import evaluationRoutes from './src/routes/evaluationRoutes.js'; 
 import authrouter from './src/routes/authRoutes.js';
 import { fileAttenteRoutes } from './src/routes/fileAttenteRoutes.js';
-import { sendSmsNotification } from './src/services/smsService.js'; // Import de la fonction d'envoi de SMS
+// import { sendSmsNotification } from './src/services/smsService.js'; 
 import dotenv from 'dotenv';
 import reportingRoutes from './src/routes/reportingRoutes.js';
 // Charge les variables d'environnement
