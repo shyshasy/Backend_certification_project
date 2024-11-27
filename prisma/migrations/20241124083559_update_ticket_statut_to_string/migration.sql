@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Ticket" ALTER COLUMN "statut" SET DATA TYPE TEXT;

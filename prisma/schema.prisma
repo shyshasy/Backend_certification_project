@@ -30,19 +30,24 @@ model Guichet {
 
   tickets         Ticket[] @relation("GuichetTickets")
 }
-
 model Ticket {
-  id                Int        @id @default(autoincrement())
-  statut            Boolean    @default(true)
+  id                 Int         @id @default(autoincrement())
+  nom                String      @db.VarChar(50)
+  telephone          Int
+  numero             Int         @unique
+  statut             String      // Modifié pour accepter des chaînes de caractères
   date_heure_creation DateTime
-  numero            Int @unique
+  utilisateur_id     Int
+  utilisateur        Utilisateur @relation("UtilisateurTickets", fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  guichet_id         Int
+  guichet            Guichet     @relation("GuichetTickets", fields: [guichet_id], references: [id], onDelete: Cascade)
 
-  guichet_id        Int
-  utilisateur_id    Int
-
-  guichet           Guichet    @relation("GuichetTickets", fields: [guichet_id], references: [id])
-  utilisateur       Utilisateur @relation("UtilisateurTickets", fields: [utilisateur_id], references: [id])
+  @@index([utilisateur_id])
+  @@index([guichet_id])
 }
+
+
+
 
 model Evaluation {
   id             Int        @id @default(autoincrement())

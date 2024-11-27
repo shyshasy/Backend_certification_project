@@ -15,10 +15,11 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5002;
-
 const corsOption = {
-    origin: "*", optionSuccessStatus: 200
+  origin: 'http://localhost:5173', // Remplace par l'URL de ton frontend
+  optionSuccessStatus: 200
 };
+
 
 // Middleware
 app.use(helmet()); // Sécurise les en-têtes HTTP
