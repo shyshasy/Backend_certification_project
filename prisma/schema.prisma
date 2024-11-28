@@ -33,7 +33,7 @@ model Guichet {
 model Ticket {
   id                 Int         @id @default(autoincrement())
   nom                String      @db.VarChar(50)
-  telephone          Int
+ telephone           String  
   numero             Int         @unique
   statut             String      // Modifié pour accepter des chaînes de caractères
   date_heure_creation DateTime

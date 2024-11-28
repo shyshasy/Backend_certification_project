@@ -1,64 +1,48 @@
-import prisma from "../config/client.js";
+import sendSms from '../../sendMessage.mjs';  // Importation correcte de la fonction sendSms
+import prisma from "../config/client.js";  // Votre client Prisma
 
-// Fonction pour valider les données du ticket
-const validateTicketData = (data) => {
-  const { nom, telephone, statut, guichet_id, utilisateur_id } = data;
-
-  // Vérification de la présence des champs requis
-  if (!nom || !telephone || !statut || !guichet_id || !utilisateur_id) {
-    return 'Tous les champs sont obligatoires.';
-  }
-
-  // Vérification si le numéro de téléphone est un nombre valide
-  if (isNaN(telephone)) {
-    return 'Le numéro de téléphone doit être un nombre valide.';
-  }
-
-  // Si aucune erreur de validation
-  return null;
-};
-
-// Créer un ticket
 export const createTicket = async (req, res) => {
   try {
     const { nom, telephone, statut, guichet_id, utilisateur_id } = req.body;
 
-    // Valider les données du ticket
-    const validationError = validateTicketData(req.body);
-    if (validationError) {
-      return res.status(400).json({ error: validationError });
-    }
-    
-const maxTicket = await prisma.ticket.findMany({
-  orderBy: {
-    numero: 'desc'  
-  },
-  take: 1          
-});
+    const maxTicket = await prisma.ticket.findMany({
+      orderBy: {
+        numero: 'desc',
+      },
+      take: 1,
+    });
 
-// Extrait le numéro du ticket trouvé
-const num =  maxTicket[0].numero +1 || 1 ;
+    const num = maxTicket[0]?.numero + 1 || 1;
+    console.log("Le numéro maximum est:", num);
 
-console.log("Le numéro maximum est:", num);
-
-    // Créer un nouveau ticket avec les informations fournies
+    // Créer le ticket
     const newTicket = await prisma.ticket.create({
       data: {
         nom,
-        telephone: parseInt(telephone, 10), // Convertir le numéro de téléphone en entier
-        numero:  Number(num), // Générer le numéro de ticket basé sur le nombre total de tickets
+        telephone: telephone.toString(),
+        numero: Number(num),
         statut,
-        date_heure_creation: new Date().toISOString(), // Date et heure locale sous format ISO 8601 valide
+        date_heure_creation: new Date().toISOString(),
         guichet: {
-          connect: { id: parseInt(guichet_id) } // Connexion au guichet par son ID
+          connect: { id: parseInt(guichet_id) },
         },
         utilisateur: {
-          connect: { id: parseInt(utilisateur_id) } // Connexion à l'utilisateur par son ID
-        }
-      }
+          connect: { id: parseInt(utilisateur_id) },
+        },
+      },
     });
 
-    // Envoyer le ticket créé en réponse
+    // Envoyer le SMS après création
+    try {
+      await sendSms({
+        to: telephone,
+        body: `Bonjour ${nom}, votre ticket numéro ${num} a été créé avec succès. Veuillez patienter jusqu'à votre tour.`,
+      });
+      console.log("SMS envoyé avec succès");
+    } catch (smsError) {
+      console.error("Erreur lors de l'envoi du SMS:", smsError);
+    }
+
     res.status(201).json(newTicket);
   } catch (error) {
     console.error("Erreur lors de la création du ticket:", error);
@@ -66,6 +50,7 @@ console.log("Le numéro maximum est:", num);
     res.status(500).json({ error: errorMessage, details: error });
   }
 };
+
 
 // Obtenir tous les tickets
 export const getAllTickets = async (req, res) => {
@@ -160,3 +145,7 @@ export const deleteTicket = async (req, res) => {
     res.status(500).json({ error: errorMessage, details: error });
   }
 };
+/// sendMessage.mjs
+// sendMessage.mjs
+
+

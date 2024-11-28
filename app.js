@@ -13,6 +13,7 @@ import reportingRoutes from './src/routes/reportingRoutes.js';
 // Charge les variables d'environnement
 dotenv.config();
 
+
 const app = express();
 const PORT = process.env.PORT || 5002;
 const corsOption = {
