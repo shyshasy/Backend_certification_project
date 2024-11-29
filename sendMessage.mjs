@@ -2,18 +2,18 @@
 import twilio from 'twilio';
 
 const accountSid = 'ACe48146162d384255af8460828bf48407';  // Remplacez par votre Account SID
-const authToken = '6d73d2605a66ab72f28f2217bd834186';  // Remplacez par votre Auth Token
+const authToken = '748105647632d9bc9625a505ba9371ec';  // Remplacez par votre Auth Token
 
 // Initialiser le client Twilio
 const client = twilio(accountSid, authToken);
 
 // Fonction pour envoyer un message
-function sendSms() {
+function sendSms(msg, telephone) {
   client.messages
     .create({
-      body: 'Bonjour, ceci est un message envoyé via Twilio. Votre tour approche, merci de vous rendre sur place!',
+      body: msg,
       from: '++12132795621',  // Remplacez par votre numéro Twilio
-      to: '+22249900343'     // Remplacez par le numéro du destinataire
+      to: telephone     // Remplacez par le numéro du destinataire
     })
     .then(message => {
       console.log('Message envoyé avec succès! SID:', message.sid);

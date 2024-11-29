@@ -34,10 +34,8 @@ export const createTicket = async (req, res) => {
 
     // Envoyer le SMS après création
     try {
-      await sendSms({
-        to: telephone,
-        body: `Bonjour ${nom}, votre ticket numéro ${num} a été créé avec succès. Veuillez patienter jusqu'à votre tour.`,
-      });
+      const msg = `Bonjour ${nom}, votre ticket numéro ${num} a été créé avec succès. Veuillez patienter jusqu'à votre tour.`
+       sendSms(msg, telephone);
       console.log("SMS envoyé avec succès");
     } catch (smsError) {
       console.error("Erreur lors de l'envoi du SMS:", smsError);
@@ -97,25 +95,46 @@ export const getTicketById = async (req, res) => {
 export const updateTicket = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nom, telephone, statut, guichet_id } = req.body;
+    const { nom ="", telephone= "", statut, guichet_id= "" } = req.body;
 
+    const currentTicket = await prisma.ticket.findUnique({where : {id: Number(id)}})
+
+    
     // Vérification que l'ID du ticket existe
     const ticketExist = await prisma.ticket.findUnique({ where: { id: parseInt(id) } });
     if (!ticketExist) {
       return res.status(404).json({ error: "Ticket non trouvé" });
+    }else if(nom){
+      const updatedTicket = await prisma.ticket.update({
+  
+        where: { id: parseInt(id) },
+        data: {
+          nom,
+          telephone: telephone,
+          statut,
+          guichet: { connect: { id: parseInt(guichet_id) } }, // Mettre à jour le guichet
+        }
+      });
+  
+      res.status(200).json(updatedTicket);
+    }
+    else{
+      const updatedTicket = await prisma.ticket.update({
+
+        where: { id: parseInt(id) },
+        data: {statut}
+      });
+  
+      res.status(200).json(updatedTicket);
     }
 
-    const updatedTicket = await prisma.ticket.update({
-      where: { id: parseInt(id) },
-      data: {
-        nom,
-        telephone: parseInt(telephone, 10),
-        statut,
-        guichet: { connect: { id: parseInt(guichet_id) } }, // Mettre à jour le guichet
-      }
-    });
+    const ticketUpdated = await prisma.ticket.findUnique({where : {id: Number(id)}})
+    if(currentTicket !== ticketUpdated){
+      const msg = `Bonjour ${currentTicket.nom}, le statut de votre ticket était ${currentTicket.statut} et maintenant est ${ticketUpdated.statut}.`
+       sendSms(msg, ticketUpdated.telephone);
+      console.log("SMS envoyé avec succès");
+    }
 
-    res.status(200).json(updatedTicket);
   } catch (error) {
     console.error("Erreur lors de la mise à jour du ticket:", error);
     const errorMessage = error.message || "Erreur lors de la mise à jour du ticket";
