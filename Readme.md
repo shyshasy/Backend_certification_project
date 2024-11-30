@@ -3,7 +3,7 @@
 
 ## Description
 
-Ce projet est une API de gestion des files d'attente, des guichets, des tickets, et des utilisateurs. Elle permet la gestion complète des évaluations des utilisateurs, des tickets de file d'attente, des guichets, et offre plusieurs opérations CRUD (Create, Read, Update, Delete).
+Ce projet est une API de gestion des files d'attente, des guichets, des tickets, et des utilisateurs. Elle permet la gestion complète  des utilisateurs, des tickets de file d'attente, des guichets, et offre plusieurs opérations CRUD (Create, Read, Update, Delete).
 
 L'API est construite avec **PostgreSQL** comme base de données relationnelle et **Prisma** comme ORM.
 
@@ -84,7 +84,7 @@ model Utilisateur {
   password  String   @db.VarChar(255)
 
   tickets   Ticket[] @relation("UtilisateurTickets")
-  evaluations Evaluation[] @relation("UtilisateurEvaluations")
+("UtilisateurEvaluations")
 }
 
 model Guichet {
@@ -100,7 +100,7 @@ model Ticket {
   id                Int        @id @default(autoincrement())
   statut            Boolean    @default(true)
   date_heure_creation DateTime
-  numero            Int        @unique
+  numero            string       @unique
 
   guichet_id        Int
   utilisateur_id    Int
@@ -109,15 +109,7 @@ model Ticket {
   utilisateur       Utilisateur @relation("UtilisateurTickets", fields: [utilisateur_id], references: [id])
 }
 
-model Evaluation {
-  id             Int        @id @default(autoincrement())
-  satis_score    Int
-  commentaire    String     @db.Text
-  date_evaluation DateTime
 
-  utilisateur_id Int
-  utilisateur    Utilisateur @relation("UtilisateurEvaluations", fields: [utilisateur_id], references: [id])
-}
 ```
 
 ## Endpoints
@@ -169,17 +161,7 @@ model Evaluation {
 
 ### 4. Évaluations
 
-- **Récupérer toutes les évaluations** : `GET /evaluations`
-- **Créer une nouvelle évaluation** : `POST /evaluations`
-  - Exemple de corps de requête :
-    ```json
-    {
-      "satis_score": 5,
-      "commentaire": "Service rapide et efficace.",
-      "utilisateur_id": 1
-    }
-    ```
-- **Supprimer une évaluation** : `DELETE /evaluations/:id`
+- **Récupérer toutes les évaluations** : `GET /
 
 ## Utilisation de Postman
 

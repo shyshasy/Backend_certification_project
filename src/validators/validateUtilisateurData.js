@@ -10,25 +10,19 @@ const prisma = new PrismaClient();
 
 export const validateUtilisateurData = async (req, res, next) => {
     const { email, nom, role, status } = req.body;
+    const userId = req.params.id; // Assurez-vous que l'ID est bien passé dans l'URL
     let errors = [];
 
-    // Vérification que l'email est défini et valide
-    if (!email || !isEmail(email)) {
-        errors.push("L'email doit être valide.");
-    } else {
-        // Vérifier si l'email est déjà utilisé
-        const existingUser = await prisma.utilisateur.findUnique({
-            where: { email: email }
-        });
-
-        if (existingUser) {
-            errors.push("L'email est déjà utilisé.");
-        }
+    // Vérification de l'email uniquement s'il est fourni (optionnel lors de l'update)
+    if (email) {
+        if (!isEmail(email)) {
+            errors.push("L'email doit être valide.");
+        } 
     }
 
     // Vérification de la longueur du nom
     if (!nom || !isLength(nom, { min: 1, max: 50 })) {
-        errors.push("Le nom doit être entre 1 et 100 caractères.");
+        errors.push("Le nom doit être entre 1 et 50 caractères.");
     }
 
     // Gestion du statut : accepter seulement un booléen
